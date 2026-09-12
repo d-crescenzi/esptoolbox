@@ -95,6 +95,8 @@ fun USBConnectionScreen(
 
                 UsbConnectionCredentialsWidget(ssid, pwd)
 
+                UsbConnectionStatusWidget(deviceSnapshot)
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(SPACE_L)
@@ -111,9 +113,6 @@ fun USBConnectionScreen(
                         onFormatSelected = { format.value = it }
                     )
                 }
-
-
-                UsbConnectionStatusWidget(deviceSnapshot)
             }
         }
 

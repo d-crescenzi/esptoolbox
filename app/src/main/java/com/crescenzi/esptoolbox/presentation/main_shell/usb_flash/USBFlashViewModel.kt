@@ -12,7 +12,6 @@ import com.crescenzi.esp32.usb.UsbRepo
 import com.crescenzi.esp32.usb.model.LogLevel
 import com.crescenzi.esp32.firmware.EspRepo
 import com.crescenzi.esp32.firmware.EspCallback
-import com.crescenzi.esptoolbox.presentation.main_shell.usb_flash.FlashFileEntry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.io.InputStream
@@ -26,6 +25,11 @@ class USBFlashViewModel(
     private val espRepo: EspRepo,
     val logRepo: LogRepo
 ) : ViewModel() {
+    private val defaultAddresses = listOf(0x8000, 0x1000, 0x10000, 0x9000, 0x20000, 0x300000)
+
+    companion object {
+        const val MAX_FLASH_FILES = 6
+    }
 
     private val _baudRate = MutableStateFlow(BaudRateFormat.B115200)
     val baudRate = _baudRate.asStateFlow()
@@ -34,23 +38,37 @@ class USBFlashViewModel(
         _baudRate.value = baudRateFormat
     }
 
-    private val _flashFiles = MutableStateFlow(
-        listOf(
-            FlashFileEntry(address = 0x8000),
-            FlashFileEntry(address = 0x1000),
-            FlashFileEntry(address = 0x10000),
-            FlashFileEntry(address = 0x9000),
-            FlashFileEntry(address = 0x20000),
-        )
-    )
+    private val _flashFiles = MutableStateFlow(emptyList<FlashFileEntry>())
     val flashFiles = _flashFiles.asStateFlow()
 
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
 
-    fun updateFlashFile(index: Int, label: String, address: Int=0, uri: Uri?) {
+    fun addFlashFile(label: String, uri: Uri) {
+        val current = _flashFiles.value
+        if (current.size >= MAX_FLASH_FILES) return
+
+        _flashFiles.value = current + FlashFileEntry(
+            label = label,
+            address = defaultAddresses.getOrElse(current.size) { 0x10000 },
+            uri = uri
+        )
+    }
+
+    fun removeFlashFile(index: Int) {
         val current = _flashFiles.value.toMutableList()
-        current[index] = current[index].copy(label = label, address = address, uri = uri)
+        if (index !in current.indices) return
+        current.removeAt(index)
+        _flashFiles.value = current
+    }
+
+    fun updateFlashAddress(index: Int, address: Int?, addressValid: Boolean) {
+        val current = _flashFiles.value.toMutableList()
+        if (index !in current.indices) return
+        current[index] = current[index].copy(
+            address = address ?: current[index].address,
+            addressValid = addressValid
+        )
         _flashFiles.value = current
     }
 
@@ -105,7 +123,7 @@ class USBFlashViewModel(
                 espRepo.setBaudRateCallback { _baudRate.value }
 
                 if (espRepo.chipValidation()) {
-                    for (item in _flashFiles.value) {
+                    for (item in _flashFiles.value.filter { it.uri != null && it.addressValid }) {
                         logRepo.plusLog(
                             context.getString(R.string.flash_do_not_disconnect_usb),
                             LogLevel.WARNING
@@ -124,11 +142,6 @@ class USBFlashViewModel(
                                     espRepo.flashFirmware(byteArray, item.address)
                                 }
                             }
-                        } ?: run {
-                            logRepo.plusLog(
-                                context.getString(R.string.invalid_file_detected),
-                                LogLevel.WARNING
-                            )
                         }
                     }
                     logRepo.plusLog(

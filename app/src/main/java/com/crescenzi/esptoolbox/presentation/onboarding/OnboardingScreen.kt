@@ -5,9 +5,6 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -50,7 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.crescenzi.esptoolbox.R
 import com.crescenzi.esptoolbox.presentation.main_shell.LocalNavController
-import com.crescenzi.esptoolbox.presentation.main_shell.ONBOARDING_NAV_PILL_SHARED_KEY
 import com.crescenzi.esptoolbox.presentation.main_shell.OnboardingPage
 import com.crescenzi.esptoolbox.presentation.main_shell.UsbPage
 import com.crescenzi.esptoolbox.presentation.widget.AppButton
@@ -67,12 +63,9 @@ import com.crescenzi.esptoolbox.theme.SPACE_XL
 /**
  * Page used for all onboarding permission checks
  */
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun OnboardingScreen(
-    onboardingViewModel: OnboardingViewModel,
-    sharedTransitionScope: SharedTransitionScope? = null,
-    animatedVisibilityScope: AnimatedVisibilityScope? = null,
+    onboardingViewModel: OnboardingViewModel
 ) {
 
     val activity = LocalActivity.current
@@ -106,17 +99,6 @@ fun OnboardingScreen(
             OnboardingStepId.LOCATION -> !locationState
         }
     }
-    val goButtonModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null) {
-        with(sharedTransitionScope) {
-            Modifier.sharedBounds(
-                sharedContentState = rememberSharedContentState(ONBOARDING_NAV_PILL_SHARED_KEY),
-                animatedVisibilityScope = animatedVisibilityScope,
-                resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
-            )
-        }
-    } else {
-        Modifier
-    }
 
     AppScaffold(
         title = stringResource(R.string.get_started_tool),
@@ -124,7 +106,6 @@ fun OnboardingScreen(
         scrollable = false,
         bottomBar = {
             AppButton(
-                modifier = goButtonModifier,
                 txt = stringResource(R.string.go_tool),
                 enabled = allRequirementsMet,
                 onTap = {
@@ -133,6 +114,7 @@ fun OnboardingScreen(
                             popUpTo(OnboardingPage) {
                                 inclusive = true
                             }
+                            launchSingleTop = true
                         }
                     }
                 }

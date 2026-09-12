@@ -29,6 +29,9 @@ class WIFIViewModel(
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
 
+    fun resetLoading() {
+        _loading.value = false
+    }
 
     /**
      *

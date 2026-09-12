@@ -2,10 +2,6 @@ package com.crescenzi.esptoolbox.presentation.main_shell
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
@@ -113,9 +109,6 @@ val LocalNavController = staticCompositionLocalOf<NavHostController> {
     error("LocalNavController is not provided.")
 }
 
-internal const val ONBOARDING_NAV_PILL_SHARED_KEY = "onboarding_nav_pill"
-
-
 private enum class Workspace {
     USB, FLASH, LOG, WIFI;
 
@@ -143,7 +136,6 @@ private enum class Workspace {
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainShell(
     onReqUsbPermission: () -> Unit
@@ -220,101 +212,78 @@ fun MainShell(
     val haptic = LocalHapticFeedback.current
 
     CompositionLocalProvider(LocalNavController provides navController) {
-        SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
-            val sharedTransitionScope = this
+        Box(modifier = Modifier.fillMaxSize()) {
 
-            Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                NavHost(
+                    navController = navController,
+                    startDestination = OnboardingPage,
+                    modifier = Modifier.weight(1f)
                 ) {
-
-                    NavHost(
-                        navController = navController,
-                        startDestination = OnboardingPage,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        composable<OnboardingPage> {
-                            OnboardingScreen(
-                                onboardingViewModel = koinViewModel(viewModelStoreOwner = it),
-                                sharedTransitionScope = sharedTransitionScope,
-                                animatedVisibilityScope = this
-                            )
-                        }
-                        composable<UsbPage> {
-                            USBConnectionScreen(
-                                usbConnectionViewModel = koinViewModel(viewModelStoreOwner = it),
-                                onReqUsbPermission = onReqUsbPermission
-                            )
-                        }
-                        composable<FlashPage> {
-                            USBFlashScreen(koinViewModel(viewModelStoreOwner = it))
-                        }
-                        composable<LogPage> {
-                            LogScreen(koinViewModel(viewModelStoreOwner = it))
-                        }
-                        composable<WifiPage> {
-                            WIFIConnectionScreen(koinViewModel(viewModelStoreOwner = it))
-                        }
-                        composable<RequirementPage> {
-                            val args = it.toRoute<RequirementPage>()
-                            RequirementScreen(
-                                titleRes = args.titleRes,
-                                subtitleRes = args.subtitleRes
-                            )
-                        }
-                    }
-                }
-
-                AnimatedVisibility(
-                    visible = currentWorkspace != null,
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                ) {
-                    currentWorkspace?.let { selectedWorkspace ->
-                        BottomNavigationPill(
-                            currentWorkspace = selectedWorkspace,
-                            showBadge = showBadge.value,
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = this,
-                            onWorkspaceClick = { workspace ->
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                if (selectedWorkspace != workspace) {
-                                    navController.navigate(workspace.destination()) {
-                                        popUpTo(OnboardingPage) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-                                if (workspace == Workspace.LOG) {
-                                    showBadge.value = false
-                                }
-                            }
+                    composable<OnboardingPage> {
+                        OnboardingScreen(
+                            onboardingViewModel = koinViewModel(viewModelStoreOwner = it)
                         )
                     }
+                    composable<UsbPage> {
+                        USBConnectionScreen(
+                            usbConnectionViewModel = koinViewModel(viewModelStoreOwner = it),
+                            onReqUsbPermission = onReqUsbPermission
+                        )
+                    }
+                    composable<FlashPage> {
+                        USBFlashScreen(koinViewModel(viewModelStoreOwner = it))
+                    }
+                    composable<LogPage> {
+                        LogScreen(koinViewModel(viewModelStoreOwner = it))
+                    }
+                    composable<WifiPage> {
+                        WIFIConnectionScreen(koinViewModel(viewModelStoreOwner = it))
+                    }
+                    composable<RequirementPage> {
+                        val args = it.toRoute<RequirementPage>()
+                        RequirementScreen(
+                            titleRes = args.titleRes,
+                            subtitleRes = args.subtitleRes
+                        )
+                    }
+                }
+            }
+
+            AnimatedVisibility(
+                visible = currentWorkspace != null,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            ) {
+                currentWorkspace?.let { selectedWorkspace ->
+                    BottomNavigationPill(
+                        currentWorkspace = selectedWorkspace,
+                        showBadge = showBadge.value,
+                        onWorkspaceClick = { workspace ->
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            if (selectedWorkspace != workspace) {
+                                navController.navigateToWorkspace(workspace)
+                            }
+                            if (workspace == Workspace.LOG) {
+                                showBadge.value = false
+                            }
+                        }
+                    )
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun BottomNavigationPill(
     currentWorkspace: Workspace,
     showBadge: Boolean,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     onWorkspaceClick: (Workspace) -> Unit,
 ) {
-    val sharedModifier = with(sharedTransitionScope) {
-        Modifier.sharedBounds(
-            sharedContentState = rememberSharedContentState(ONBOARDING_NAV_PILL_SHARED_KEY),
-            animatedVisibilityScope = animatedVisibilityScope,
-            resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
-        )
-    }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -323,7 +292,6 @@ private fun BottomNavigationPill(
         contentAlignment = Alignment.Center
     ) {
         Surface(
-            modifier = sharedModifier,
             shape = RoundedCornerShape(NAV_PILL_RADIUS),
             color = MaterialTheme.colorScheme.surfaceContainerHighest,
             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -350,6 +318,16 @@ private fun BottomNavigationPill(
                 }
             }
         }
+    }
+}
+
+private fun NavHostController.navigateToWorkspace(workspace: Workspace) {
+    navigate(workspace.destination()) {
+        popUpTo(UsbPage) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 

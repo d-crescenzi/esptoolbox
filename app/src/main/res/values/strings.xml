@@ -32,6 +32,8 @@
     <!-- UsbUpdaterScreen-->
     <string name="btn_flash" translatable="false">Flash</string>
     <string name="btn_reset" translatable="false">Reset</string>
+    <string name="btn_add_file" translatable="false">Add file</string>
+    <string name="no_flash_files" translatable="false">No files selected</string>
     <string name="flash_in_progress_warning">Flash already in progress</string>
     <string name="flash_do_not_disconnect_usb">Chip detection completed,DO NOT disconnect USB or navigate away</string>
     <string name="flash_rst">NOW PRESS THE RESET BTN !!</string>

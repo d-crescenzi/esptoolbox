@@ -37,7 +37,7 @@ fun UsbConnectionCredentialsWidget(ssidState: MutableState<String>, passwordStat
             onDone = { focusManager.clearFocus() }
         ),
         onValueChange = { passwordState.value = it },
-        label = stringResource(R.string.pwd_placeholder),
+        label = stringResource(R.string.wifi_pwd_hint),
         initialValue = passwordState.value,
         isPassword = true
     )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,12 @@ import com.crescenzi.esptoolbox.theme.SPACE_L
 fun WIFIConnectionScreen(
     wifiViewModel: WIFIViewModel
 ) {
+
+    DisposableEffect(Unit) {
+        onDispose {
+            wifiViewModel.resetLoading()
+        }
+    }
 
     val loading by wifiViewModel.loading.collectAsStateWithLifecycle()
     val ssid by wifiViewModel.ssid.collectAsStateWithLifecycle()
