@@ -11,7 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.crescenzi.esptoolbox.R
 import com.crescenzi.esptoolbox.core.AppConstants.STATUS_DEF_CHAR
 import com.crescenzi.esptoolbox.presentation.main_shell.wifi_connection.WIFIViewModel
-import com.crescenzi.esptoolbox.presentation.widget.EditText
+import com.crescenzi.esptoolbox.presentation.widget.AppTextField
 
 
 /**
@@ -27,7 +27,7 @@ fun DataSection(wifiViewModel: WIFIViewModel, pwdState: MutableState<String>) {
      * SSID
      */
     key(ssid.value) {
-        EditText(
+        AppTextField(
             modifier = Modifier.fillMaxWidth(),
             opt = KeyboardOptions.Default,
             onValueChange = {},
@@ -41,7 +41,7 @@ fun DataSection(wifiViewModel: WIFIViewModel, pwdState: MutableState<String>) {
      * BSSID
      */
     key(bssid.value) {
-        EditText(
+        AppTextField(
             modifier = Modifier.fillMaxWidth(),
             opt = KeyboardOptions.Default,
             onValueChange = {},
@@ -55,7 +55,7 @@ fun DataSection(wifiViewModel: WIFIViewModel, pwdState: MutableState<String>) {
     /**
      * Password
      */
-    EditText(
+    AppTextField(
         modifier = Modifier.fillMaxWidth(),
         opt = KeyboardOptions.Default,
         onValueChange = { pwdState.value = it },

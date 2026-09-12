@@ -45,7 +45,7 @@ import com.crescenzi.esptoolbox.core.AppConstants.PICK_MIME_TYPE
 import com.crescenzi.esptoolbox.presentation.main_shell.usb_flash.util.UsbUpdaterButtonsWidget
 import com.crescenzi.esptoolbox.presentation.util.getMessage
 import com.crescenzi.esptoolbox.presentation.widget.AppScaffold
-import com.crescenzi.esptoolbox.presentation.widget.EditText
+import com.crescenzi.esptoolbox.presentation.widget.AppTextField
 import com.crescenzi.esptoolbox.presentation.widget.UsbBaudRateWidget
 import com.crescenzi.esptoolbox.theme.CONTENT_TOP_PADDING
 import com.crescenzi.esptoolbox.theme.LATERAL_PADDING
@@ -168,7 +168,7 @@ fun USBFlashScreen(usbFlashViewModel: USBFlashViewModel) {
                         )
                         Box(modifier = Modifier.weight(1f)) {
                             key(index, fileEntry.uri) {
-                                EditText(
+                                AppTextField(
                                     opt = KeyboardOptions.Default,
                                     label = "",
                                     initialValue = "0x${fileEntry.address.toString(16)}",

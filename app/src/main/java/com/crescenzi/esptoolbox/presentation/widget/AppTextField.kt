@@ -46,7 +46,7 @@ import com.crescenzi.esptoolbox.theme.SPACE_L
 import com.crescenzi.esptoolbox.theme.SPACE_S
 
 @Composable
-internal fun EditText(
+internal fun AppTextField(
     modifier: Modifier = Modifier,
     vt: VisualTransformation = VisualTransformation.None,
     opt: KeyboardOptions,
