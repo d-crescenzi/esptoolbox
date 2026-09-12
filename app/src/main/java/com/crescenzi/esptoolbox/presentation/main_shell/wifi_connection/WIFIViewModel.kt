@@ -36,7 +36,7 @@ class WIFIViewModel(
      */
     fun sendBroadcast(pwd: String) {
         // Empty password is allowed (open networks); only SSID/BSSID are required
-        if (ssid.value.isEmpty() || bssid.value.isEmpty()) return   // If empty, either permissions are missing or an error occurred
+        if (!isNetworkInfoAvailable()) return   // If empty, either permissions are missing or an error occurred
 
         logRepo.plusLog(line = getApplication<Application>().getString(R.string.broadcast_warning), logLevel = LogLevel.WARNING)
         Thread {
@@ -64,6 +64,12 @@ class WIFIViewModel(
         }.start()
     }
 
+    fun isNetworkInfoAvailable(
+        ssid: String = this.ssid.value,
+        bssid: String = this.bssid.value
+    ): Boolean =
+        ssid.isAvailableNetworkValue() && bssid.isAvailableNetworkValue()
+
     /**
      * Disables loading and logs the exception
      */
@@ -78,3 +84,6 @@ class WIFIViewModel(
     }
 
 }
+
+private fun String.isAvailableNetworkValue(): Boolean =
+    trim().isNotEmpty() && !trim().equals("null", ignoreCase = true)

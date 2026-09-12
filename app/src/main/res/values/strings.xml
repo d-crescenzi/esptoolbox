@@ -41,7 +41,7 @@
 
     <!-- WifiScreen-->
     <string name="wifi_connection_title">Note that Esp supports only 2.4GHz connections. Make sure you are connected to the correct band or configure your dual-band router to use 2.4GHz.</string>
-    <string name="wifi_pwd_hint" translatable="false">Password</string>
+    <string name="wifi_pwd_hint" translatable="false">Password (optional)</string>
     <string name="broadcast_warning">Starting local scanning, don\'t touch your ESP</string>
     <string name="permission_required">Permission Required</string>
     <string name="location_lost_title">Location required</string>
@@ -65,9 +65,9 @@
     <string name="usb_title" translatable="false">Usb Setup</string>
     <string name="flash_title" translatable="false">Firmware Flash</string>
     <string name="log_title" translatable="false">Logs</string>
-    <string name="wifi_title" translatable="false">Wi-Fi Setup</string>
+    <string name="wifi_title" translatable="false">Wi-Fi Setup (only 2.4GHz)</string>
     <string name="get_started_tool">Get Started</string>
-    <string name="get_started_subtitle">Before you start, make sure every requirement below is met. No alerts or snackbars will be displayed — all operation results will appear in the Log section.</string>
+    <string name="get_started_subtitle">Complete these checks before continuing.</string>
     <string name="go_tool">Go</string>
     <string name="grant_permission_tool">Grant Permission</string>
 

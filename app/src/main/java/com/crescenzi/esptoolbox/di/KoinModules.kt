@@ -5,7 +5,7 @@ import com.crescenzi.esptoolbox.presentation.DeviceHardwareStatus
 import com.crescenzi.esp32.usb.UsbRepo
 import com.crescenzi.esp32.firmware.EspRepo
 import com.crescenzi.esp32.wifi.EspTouchRepo
-import com.crescenzi.esptoolbox.presentation.entry.EntryViewModel
+import com.crescenzi.esptoolbox.presentation.onboarding.OnboardingViewModel
 import com.crescenzi.esptoolbox.presentation.main_shell.logs.LogViewModel
 import com.crescenzi.esptoolbox.presentation.main_shell.usb_connection.USBConnectionViewModel
 import com.crescenzi.esptoolbox.presentation.main_shell.usb_flash.USBFlashViewModel
@@ -22,7 +22,7 @@ val repositories = module {
 }
 
 val viewModels = module {
-    viewModel { EntryViewModel(get()) }
+    viewModel { OnboardingViewModel(get()) }
     viewModel { LogViewModel(get()) }
     viewModel { USBConnectionViewModel(get(), get(), get(), get()) }
     viewModel { USBFlashViewModel(get(), get(), get()) }

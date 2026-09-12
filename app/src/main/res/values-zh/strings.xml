@@ -10,7 +10,7 @@
     <string name="btn_clear">清空</string>
     <string name="wifi_label">Wi-Fi</string>
 
-    <!-- EntryScreen-->
+    <!-- OnboardingScreen-->
     <string name="internet_req_title">网络状态</string>
     <string name="internet_req_body">请确保已连接到互联网</string>
     <string name="location_permission_req_title">请授予位置权限</string>
@@ -53,7 +53,7 @@
 
     <!-- Global-->
     <string name="get_started_tool">开始使用</string>
-    <string name="get_started_subtitle">开始之前，请确保满足以下所有要求。应用不会显示任何提示——所有操作结果都会显示在 Log 页面。</string>
+    <string name="get_started_subtitle">继续前请完成这些检查。</string>
     <string name="go_tool">继续</string>
     <string name="grant_permission_tool">授予权限</string>
 </resources>

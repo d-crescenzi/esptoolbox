@@ -22,22 +22,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
+import com.crescenzi.esptoolbox.theme.CONTENT_TOP_PADDING
 import com.crescenzi.esptoolbox.theme.LATERAL_PADDING
 import com.crescenzi.esptoolbox.theme.SPACE_L
-import com.crescenzi.esptoolbox.theme.SPACE_M
-import com.crescenzi.esptoolbox.theme.SPACE_S
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,25 +42,19 @@ fun AppScaffold(
     titleOnPage: Boolean = true,
     reserveTopBarSpace: Boolean = false,
     contentWindowInsets: WindowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout),
-    contentPadding: PaddingValues = PaddingValues(horizontal = LATERAL_PADDING, vertical = SPACE_L),
+    contentPadding: PaddingValues = PaddingValues(
+        start = LATERAL_PADDING,
+        end = LATERAL_PADDING,
+        top = CONTENT_TOP_PADDING,
+        bottom = SPACE_L
+    ),
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(SPACE_L),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     bottomBar: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val headingOnPage = titleOnPage && title != null
-    val barShown = trailing != null || (title != null && !headingOnPage) || reserveTopBarSpace
-    val collapsing = headingOnPage && barShown && scrollable
-    val density = LocalDensity.current
+    val barShown = title != null || trailing != null || reserveTopBarSpace
     val scrollState = rememberScrollState()
-    var titleHeightPx by remember { mutableStateOf(0) }
-    val topPadPx = with(density) { contentPadding.calculateTopPadding().toPx() }
-    val headingParallaxPx = with(density) { SPACE_S.toPx() }
-    val handoffLeadPx = with(density) { SPACE_M.toPx() }
-    val collapseFraction: () -> Float = {
-        val travel = titleHeightPx.toFloat().coerceAtLeast(1f)
-        ((scrollState.value.toFloat() - (topPadPx - handoffLeadPx)) / travel).coerceIn(0f, 1f)
-    }
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
             containerColor = Color.Transparent,
@@ -76,18 +63,6 @@ fun AppScaffold(
                 if (barShown) {
                     AppTopBar(
                         title = title.orEmpty(),
-                        titleAlpha =
-                            when {
-                                collapsing -> {
-                                    { barTitleAlpha(collapseFraction()) }
-                                }
-                                headingOnPage -> {
-                                    { 0f }
-                                }
-                                else -> {
-                                    { 1f }
-                                }
-                            },
                         trailing = trailing,
                     )
                 }
@@ -125,37 +100,6 @@ fun AppScaffold(
                 verticalArrangement = verticalArrangement,
                 horizontalAlignment = horizontalAlignment,
             ) {
-                if (headingOnPage) {
-                    Text(
-                        title,
-                        style = MaterialTheme.typography.displaySmall,
-                        modifier =
-                            Modifier
-                                .then(
-                                    if (!scrollable) {
-                                        Modifier.padding(
-                                            start = LATERAL_PADDING,
-                                            end = LATERAL_PADDING,
-                                            top = SPACE_L,
-                                        )
-                                    } else {
-                                        Modifier
-                                    },
-                                )
-                                .onSizeChanged { titleHeightPx = it.height }
-                                .then(
-                                    if (collapsing) {
-                                        Modifier.graphicsLayer {
-                                            val c = collapseFraction()
-                                            alpha = largeTitleAlpha(c)
-                                            translationY = -c * headingParallaxPx
-                                        }
-                                    } else {
-                                        Modifier
-                                    },
-                                ),
-                    )
-                }
                 content()
             }
         }
@@ -166,36 +110,16 @@ fun AppScaffold(
 @Composable
 fun AppTopBar(
     title: String,
-    titleAlpha: () -> Float = { 1f },
     trailing: (@Composable () -> Unit)? = null,
 ) {
-    val slidePx = with(LocalDensity.current) { SPACE_S.toPx() }
     TopAppBar(
-        title = {
-            Text(
-                title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier =
-                    Modifier.graphicsLayer {
-                        val a = titleAlpha()
-                        alpha = a
-                        translationY = (1f - a) * slidePx
-                    },
-            )
-        },
+        title = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         actions = { trailing?.invoke() },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     )
 }
-
-private const val BAR_TITLE_FADE_START = 0.45f
-
-private fun smootherstep(x: Float): Float {
-    val t = x.coerceIn(0f, 1f)
-    return t * t * t * (t * (t * 6f - 15f) + 10f)
-}
-
-private fun largeTitleAlpha(collapse: Float): Float = 1f - smootherstep(collapse)
-
-private fun barTitleAlpha(collapse: Float): Float =
-    smootherstep((collapse - BAR_TITLE_FADE_START) / (1f - BAR_TITLE_FADE_START))

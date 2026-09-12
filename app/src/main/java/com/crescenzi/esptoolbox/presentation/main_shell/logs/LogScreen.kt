@@ -30,6 +30,7 @@ import com.crescenzi.esp32.usb.model.LogLevel
 import com.crescenzi.esptoolbox.presentation.main_shell.logs.util.LogScreenTopBarWidget
 import com.crescenzi.esptoolbox.presentation.widget.AppScaffold
 import com.crescenzi.esptoolbox.theme.CARD_RADIUS
+import com.crescenzi.esptoolbox.theme.CONTENT_TOP_PADDING
 import com.crescenzi.esptoolbox.theme.LATERAL_PADDING
 import com.crescenzi.esptoolbox.theme.NAV_PILL_CLEARANCE
 import com.crescenzi.esptoolbox.theme.SPACE_L
@@ -75,7 +76,7 @@ fun LogScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = LATERAL_PADDING)
-                .padding(top = SPACE_L, bottom = NAV_PILL_CLEARANCE + SPACE_L),
+                .padding(top = CONTENT_TOP_PADDING, bottom = NAV_PILL_CLEARANCE + SPACE_L),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(

@@ -53,7 +53,7 @@
 
     <!-- Global-->
     <string name="get_started_tool">Inizia subito</string>
-    <string name="get_started_subtitle">Prima di iniziare, assicurati che tutti i requisiti qui sotto siano soddisfatti. Nessun messaggio o avviso verrà mostrato — i risultati delle operazioni appariranno nella sezione Log.</string>
+    <string name="get_started_subtitle">Completa questi controlli prima di continuare.</string>
     <string name="go_tool">Vai</string>
     <string name="grant_permission_tool">Concedi permesso</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.crescenzi.esptoolbox.presentation.entry
+package com.crescenzi.esptoolbox.presentation.onboarding
 
 import androidx.lifecycle.ViewModel
 import com.crescenzi.esptoolbox.presentation.DeviceHardwareStatus
@@ -7,7 +7,7 @@ import com.crescenzi.esptoolbox.presentation.DeviceHardwareStatus
 /**
  * Holds device states and permissions
  */
-class EntryViewModel(val deviceHardwareStatus: DeviceHardwareStatus) : ViewModel() {
+class OnboardingViewModel(val deviceHardwareStatus: DeviceHardwareStatus) : ViewModel() {
 
 
     /**

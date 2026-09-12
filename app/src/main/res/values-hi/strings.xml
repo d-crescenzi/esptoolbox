@@ -10,7 +10,7 @@
     <string name="btn_clear">साफ़ करें</string>
     <string name="wifi_label">Wi-Fi</string>
 
-    <!-- EntryScreen-->
+    <!-- OnboardingScreen-->
     <string name="internet_req_title">इंटरनेट स्थिति</string>
     <string name="internet_req_body">सुनिश्चित करें कि आप इंटरनेट से जुड़े हैं</string>
     <string name="location_permission_req_title">लोकेशन की अनुमति दें</string>
@@ -53,7 +53,7 @@
 
     <!-- Global-->
     <string name="get_started_tool">शुरू करें</string>
-    <string name="get_started_subtitle">शुरू करने से पहले सुनिश्चित करें कि नीचे दी गई सभी आवश्यकताएँ पूरी हैं। कोई अलर्ट नहीं दिखाया जाएगा — सभी परिणाम Log सेक्शन में दिखाई देंगे।</string>
+    <string name="get_started_subtitle">आगे बढ़ने से पहले ये जाँचें पूरी करें।</string>
     <string name="go_tool">आगे बढ़ें</string>
     <string name="grant_permission_tool">अनुमति दें</string>
 </resources>

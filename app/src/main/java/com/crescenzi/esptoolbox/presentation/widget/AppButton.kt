@@ -11,6 +11,7 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -26,7 +27,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -54,17 +57,21 @@ fun AppButton(
 ) {
     require(txt.isNotEmpty()) { "Invalid text passed into AppButton()" }
 
-    val debouncedTap = rememberDebouncedClick(debounceMs, onTap)
-
-    val pressed = remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if (pressed.value && enabled) 0.98f else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
-        label = "bounce",
-    )
+    val haptic = LocalHapticFeedback.current
+    val debouncedTap = rememberDebouncedClick(debounceMs) {
+        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        onTap()
+    }
 
     val accent = if (destructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground
     val minHeight = if (type == AppButtonType.CLEAR) CLEAR_BUTTON_HEIGHT else BUTTON_HEIGHT
+    val shape = RoundedCornerShape(16.dp)
+    val pressed = remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(
+        targetValue = if (pressed.value && enabled) 0.992f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium),
+        label = "button_bounce",
+    )
 
     val sharedModifier =
         modifier
@@ -73,7 +80,8 @@ fun AppButton(
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
-            }.pointerInput(enabled) {
+            }
+            .pointerInput(enabled) {
                 if (!enabled) return@pointerInput
                 awaitPointerEventScope {
                     while (true) {
@@ -120,7 +128,7 @@ fun AppButton(
                     } else {
                         ButtonDefaults.buttonColors()
                     },
-                shapes = ButtonDefaults.shapes(),
+                shape = shape,
                 contentPadding = contentPadding,
                 modifier = sharedModifier,
             ) { label() }
@@ -135,7 +143,7 @@ fun AppButton(
                         width = 1.dp,
                         color = accent.copy(alpha = if (enabled) 0.4f else 0.15f),
                     ),
-                shapes = ButtonDefaults.shapes(),
+                shape = shape,
                 contentPadding = contentPadding,
                 modifier = sharedModifier,
             ) { label() }
@@ -145,7 +153,7 @@ fun AppButton(
                 onClick = debouncedTap,
                 enabled = enabled,
                 colors = ButtonDefaults.textButtonColors(contentColor = accent),
-                shapes = ButtonDefaults.shapes(),
+                shape = shape,
                 contentPadding = contentPadding,
                 modifier = sharedModifier,
             ) { label() }

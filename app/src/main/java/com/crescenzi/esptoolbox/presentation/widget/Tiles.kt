@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -20,8 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.crescenzi.esptoolbox.R
@@ -44,10 +45,9 @@ fun LeadingTile(
     currentValue: Boolean,
     @StringRes titleRes: Int,
     @StringRes subTitleRes: Int? = null,
-    glyphColor: Color,
-    glyphContentColor: Color
 ) {
-    val iconRes = if (currentValue) R.drawable.check_icon else R.drawable.error_icon
+    val icon = if (currentValue) Icons.Rounded.Check else Icons.Rounded.ErrorOutline
+    val colorScheme = MaterialTheme.colorScheme
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -65,13 +65,13 @@ fun LeadingTile(
             Box(
                 modifier = Modifier
                     .size(TILE_GLYPH_SIZE)
-                    .background(glyphColor, shape = CircleShape),
+                    .background(colorScheme.secondary, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(iconRes),
+                    imageVector = icon,
                     contentDescription = null,
-                    tint = glyphContentColor,
+                    tint = colorScheme.onSecondary,
                     modifier = Modifier.size(TILE_GLYPH_ICON_SIZE)
                 )
             }
@@ -79,17 +79,16 @@ fun LeadingTile(
                 Text(
                     text = stringResource(titleRes),
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = colorScheme.onSurface
                 )
                 subTitleRes?.let { txtRes ->
                     Text(
                         text = stringResource(txtRes),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = colorScheme.onSurfaceVariant
                     )
                 }
             }
         }
     }
 }
-

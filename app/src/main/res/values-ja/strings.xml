@@ -10,7 +10,7 @@
     <string name="btn_clear">クリア</string>
     <string name="wifi_label">Wi-Fi</string>
 
-    <!-- EntryScreen-->
+    <!-- OnboardingScreen-->
     <string name="internet_req_title">インターネットの状態</string>
     <string name="internet_req_body">インターネットに接続されていることを確認してください</string>
     <string name="location_permission_req_title">位置情報の権限を許可してください</string>
@@ -53,7 +53,7 @@
 
     <!-- Global-->
     <string name="get_started_tool">はじめに</string>
-    <string name="get_started_subtitle">開始する前に、以下のすべての要件が満たされていることを確認してください。アラートは表示されません。すべての操作結果は Log セクションに表示されます。</string>
+    <string name="get_started_subtitle">続行する前にこれらの確認を完了してください。</string>
     <string name="go_tool">進む</string>
     <string name="grant_permission_tool">権限を許可</string>
 </resources>

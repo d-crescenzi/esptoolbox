@@ -27,6 +27,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.crescenzi.esptoolbox.core.checkStoreUpdate
 import com.crescenzi.esptoolbox.core.AppConstants.INTENT_ACTION_GRANT_USB
 import com.crescenzi.esptoolbox.core.AppConstants.permissions
+import com.crescenzi.esptoolbox.core.clearFocusOnTapOutside
 import com.crescenzi.esptoolbox.presentation.DeviceHardwareStatus
 import com.crescenzi.esp32.usb.UsbRepo
 import com.crescenzi.esptoolbox.presentation.main_shell.MainShell
@@ -74,12 +75,12 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
 
         /**
-         * Force the app to light at OS level (uiMode) + light system bars
+         * Force the app to dark at OS level (uiMode) + light system bar icons
          */
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
-            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
         super.onCreate(savedInstanceState)
 
@@ -115,7 +116,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clearFocusOnTapOutside(),
                     contentWindowInsets = WindowInsets(0, 0, 0, 0),
                     content = { safePadding ->
                         Column(

@@ -1,41 +1,35 @@
 package com.crescenzi.esptoolbox.theme
 
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.colorResource
-import com.crescenzi.esptoolbox.R
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.ui.graphics.Color
 
-@Composable
-fun appLightColorScheme(): ColorScheme =
-    lightColorScheme(
-        primary = colorResource(R.color.primary),
-        onPrimary = colorResource(R.color.onPrimary),
-        primaryContainer = colorResource(R.color.primaryContainer),
-        onPrimaryContainer = colorResource(R.color.onPrimaryContainer),
-        inversePrimary = colorResource(R.color.inversePrimary),
-        primaryFixed = colorResource(R.color.primaryFixed),
-        primaryFixedDim = colorResource(R.color.primaryFixedDim),
-        onPrimaryFixed = colorResource(R.color.onPrimaryFixed),
-        onPrimaryFixedVariant = colorResource(R.color.onPrimaryFixedVariant),
-        secondary = colorResource(R.color.secondary),
-        onSecondary = colorResource(R.color.onSecondary),
-        secondaryContainer = colorResource(R.color.secondaryContainer),
-        onSecondaryContainer = colorResource(R.color.onSecondaryContainer),
-        secondaryFixed = colorResource(R.color.secondaryFixed),
-        secondaryFixedDim = colorResource(R.color.secondaryFixedDim),
-        onSecondaryFixed = colorResource(R.color.onSecondaryFixed),
-        onSecondaryFixedVariant = colorResource(R.color.onSecondaryFixedVariant),
-        tertiary = colorResource(R.color.tertiary),
-        onTertiary = colorResource(R.color.onTertiary),
-        tertiaryContainer = colorResource(R.color.tertiaryContainer),
-        onTertiaryContainer = colorResource(R.color.onTertiaryContainer),
-        tertiaryFixed = colorResource(R.color.tertiaryFixed),
-        tertiaryFixedDim = colorResource(R.color.tertiaryFixedDim),
-        onTertiaryFixed = colorResource(R.color.onTertiaryFixed),
-        onTertiaryFixedVariant = colorResource(R.color.onTertiaryFixedVariant),
-        error = colorResource(R.color.error),
-        onError = colorResource(R.color.onError),
-        errorContainer = colorResource(R.color.errorContainer),
-        onErrorContainer = colorResource(R.color.onErrorContainer),
+fun appDarkColorScheme(): ColorScheme =
+    darkColorScheme(
+        primary = Color(0xFFFFFFFF),
+        onPrimary = Color(0xFF000000),
+        primaryContainer = Color(0xFF303030),
+        onPrimaryContainer = Color(0xFFE3E3E3),
+        secondary = Color(0xFFFFFFFF),
+        onSecondary = Color(0xFF000000),
+        secondaryContainer = Color(0xFF303030),
+        onSecondaryContainer = Color(0xFFE3E3E3),
+        background = Color(0xFF000000),
+        onBackground = Color(0xFFE3E3E3),
+        surface = Color(0xFF000000),
+        onSurface = Color(0xFFE3E3E3),
+        surfaceVariant = Color(0xFF2C2C2E),
+        surfaceDim = Color(0xFF000000),
+        surfaceBright = Color(0xFF2C2C2E),
+        surfaceContainerLowest = Color(0xFF1C1C1E),
+        surfaceContainerLow = Color(0xFF1C1C1E),
+        surfaceContainer = Color(0xFF1C1C1E),
+        surfaceContainerHigh = Color(0xFF1C1C1E),
+        surfaceContainerHighest = Color(0xFF1C1C1E),
+        onSurfaceVariant = Color(0xFF8D8D93),
+        error = Color(0xFFF2B8B5),
+        onError = Color(0xFF601410),
+        errorContainer = Color(0xFF8C1D18),
+        onErrorContainer = Color(0xFFE3E3E3),
+        outlineVariant = Color(0xFF474747),
     )

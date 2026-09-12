@@ -16,6 +16,9 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,12 +37,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.crescenzi.esptoolbox.R
 import com.crescenzi.esptoolbox.theme.FIELD_RADIUS
 import com.crescenzi.esptoolbox.theme.SPACE_L
 import com.crescenzi.esptoolbox.theme.SPACE_S
@@ -148,9 +149,7 @@ internal fun EditText(
             )
             if (isPassword) {
                 Icon(
-                    painter = painterResource(
-                        if (revealed) R.drawable.eye_off_icon else R.drawable.eye_icon
-                    ),
+                    imageVector = if (revealed) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
                     contentDescription = null,
                     tint = colorScheme.onSurfaceVariant,
                     modifier = Modifier

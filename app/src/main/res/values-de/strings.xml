@@ -10,7 +10,7 @@
     <string name="btn_clear">Leeren</string>
     <string name="wifi_label">Wi-Fi</string>
 
-    <!-- EntryScreen-->
+    <!-- OnboardingScreen-->
     <string name="internet_req_title">Internetstatus</string>
     <string name="internet_req_body">Stelle sicher, dass du mit dem Internet verbunden bist</string>
     <string name="location_permission_req_title">Erteile die Standortberechtigung</string>
@@ -53,7 +53,7 @@
 
     <!-- Global-->
     <string name="get_started_tool">Erste Schritte</string>
-    <string name="get_started_subtitle">Bevor du beginnst, stelle sicher, dass alle folgenden Anforderungen erfüllt sind. Es werden keine Hinweise angezeigt — alle Ergebnisse erscheinen im Bereich Log.</string>
+    <string name="get_started_subtitle">Schließe diese Prüfungen ab, bevor du fortfährst.</string>
     <string name="go_tool">Weiter</string>
     <string name="grant_permission_tool">Berechtigung erteilen</string>
 </resources>

@@ -12,6 +12,8 @@ val SPACE_M = 12.dp
 val SPACE_L = 16.dp
 val SPACE_XL = 24.dp
 
+val CONTENT_TOP_PADDING = 48.dp
+
 val BUTTON_HEIGHT = 48.dp
 val CLEAR_BUTTON_HEIGHT = 36.dp
 

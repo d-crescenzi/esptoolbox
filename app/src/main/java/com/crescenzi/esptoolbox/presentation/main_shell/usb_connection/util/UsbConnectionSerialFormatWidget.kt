@@ -33,6 +33,7 @@ import com.crescenzi.esp32.params.SerialFormat
  */
 @Composable
 fun UsbConnectionSerialFormatWidget(
+    modifier: Modifier = Modifier,
     selectedFormat: SerialFormat,
     onFormatSelected: (SerialFormat) -> Unit
 ) {
@@ -52,7 +53,7 @@ fun UsbConnectionSerialFormatWidget(
         label = "arrow_rotation"
     )
 
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = modifier.fillMaxWidth()) {
 
         Box(
             modifier = Modifier
@@ -67,8 +68,8 @@ fun UsbConnectionSerialFormatWidget(
                     modifier = Modifier.fillMaxWidth(),
                     opt = KeyboardOptions.Default,
                     onValueChange = {},
-                    label = "Format Serial",
-                    initialValue = selectedFormat.description,
+                    label = "Format",
+                    initialValue = selectedFormat.compactDescription(),
                     readOnly = true
                 )
             }
@@ -106,3 +107,13 @@ fun UsbConnectionSerialFormatWidget(
         }
     }
 }
+
+private fun SerialFormat.compactDescription(): String =
+    when (this) {
+        SerialFormat.Plain -> "Plain"
+        SerialFormat.Json -> "JSON"
+        SerialFormat.AT -> "AT"
+        SerialFormat.Csv -> "CSV"
+        SerialFormat.Credentials -> "Credentials"
+        SerialFormat.Custom -> "Custom"
+    }

@@ -10,7 +10,7 @@
     <string name="btn_clear">Effacer</string>
     <string name="wifi_label">Wi-Fi</string>
 
-    <!-- EntryScreen-->
+    <!-- OnboardingScreen-->
     <string name="internet_req_title">État de la connexion</string>
     <string name="internet_req_body">Assurez-vous d\'être connecté à Internet</string>
     <string name="location_permission_req_title">Accordez l\'autorisation de localisation</string>
@@ -53,7 +53,7 @@
 
     <!-- Global-->
     <string name="get_started_tool">Commencer</string>
-    <string name="get_started_subtitle">Avant de commencer, assurez-vous que toutes les conditions ci-dessous sont remplies. Aucune alerte ne sera affichée — tous les résultats apparaîtront dans la section Log.</string>
+    <string name="get_started_subtitle">Terminez ces vérifications avant de continuer.</string>
     <string name="go_tool">Continuer</string>
     <string name="grant_permission_tool">Accorder l\'autorisation</string>
 </resources>

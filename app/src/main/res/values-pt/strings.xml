@@ -10,7 +10,7 @@
     <string name="btn_clear">Limpar</string>
     <string name="wifi_label">Wi-Fi</string>
 
-    <!-- EntryScreen-->
+    <!-- OnboardingScreen-->
     <string name="internet_req_title">Status da Internet</string>
     <string name="internet_req_body">Verifique se você está conectado à internet</string>
     <string name="location_permission_req_title">Conceda a permissão de localização</string>
@@ -53,7 +53,7 @@
 
     <!-- Global-->
     <string name="get_started_tool">Começar</string>
-    <string name="get_started_subtitle">Antes de começar, verifique se todos os requisitos abaixo foram atendidos. Nenhum alerta será exibido — todos os resultados aparecerão na seção Log.</string>
+    <string name="get_started_subtitle">Conclua estas verificações antes de continuar.</string>
     <string name="go_tool">Avançar</string>
     <string name="grant_permission_tool">Conceder permissão</string>
 </resources>

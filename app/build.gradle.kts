@@ -14,8 +14,8 @@ android {
         applicationId = "com.crescenzi.esptoolbox"
         minSdk = 27
         targetSdk = 37
-        versionCode = 5
-        versionName = "3.0.0"
+        versionCode = 6
+        versionName = "2.0.0"
 
         /* == To avoid resource contamination, supported languages: En, It == */
         androidResources.localeFilters.addAll(listOf("it", "hi", "es", "fr", "de", "zh", "ja", "pt"))
@@ -62,10 +62,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.animation.graphics)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
     debugImplementation(libs.androidx.ui.tooling)
 
     implementation(project(":esp32"))

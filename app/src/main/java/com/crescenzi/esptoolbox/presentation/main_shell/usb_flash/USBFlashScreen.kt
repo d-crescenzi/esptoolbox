@@ -3,11 +3,9 @@ package com.crescenzi.esptoolbox.presentation.main_shell.usb_flash
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,9 +18,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularWavyProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AttachFile
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,9 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,14 +41,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.crescenzi.esptoolbox.R
 import com.crescenzi.esptoolbox.core.getFileNameWithoutBin
-import com.crescenzi.esptoolbox.core.AppConstants.BLUE_GLYPH
-import com.crescenzi.esptoolbox.core.AppConstants.ON_BLUE_GLYPH
 import com.crescenzi.esptoolbox.core.AppConstants.PICK_MIME_TYPE
 import com.crescenzi.esptoolbox.presentation.main_shell.usb_flash.util.UsbUpdaterButtonsWidget
 import com.crescenzi.esptoolbox.presentation.util.getMessage
 import com.crescenzi.esptoolbox.presentation.widget.AppScaffold
 import com.crescenzi.esptoolbox.presentation.widget.EditText
 import com.crescenzi.esptoolbox.presentation.widget.UsbBaudRateWidget
+import com.crescenzi.esptoolbox.theme.CONTENT_TOP_PADDING
 import com.crescenzi.esptoolbox.theme.LATERAL_PADDING
 import com.crescenzi.esptoolbox.theme.NAV_PILL_CLEARANCE
 import com.crescenzi.esptoolbox.theme.SPACE_L
@@ -103,7 +101,7 @@ fun USBFlashScreen(usbFlashViewModel: USBFlashViewModel) {
             contentPadding = PaddingValues(
                 start = LATERAL_PADDING,
                 end = LATERAL_PADDING,
-                top = SPACE_L,
+                top = CONTENT_TOP_PADDING,
                 bottom = NAV_PILL_CLEARANCE + SPACE_L
             )
         ) {
@@ -124,31 +122,14 @@ fun USBFlashScreen(usbFlashViewModel: USBFlashViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
-                        val iconRes =
-                            if (fileEntry.uri != null) R.drawable.close_icon else R.drawable.attach_icon
-
-                        val iconBgColor = if (fileEntry.uri != null) {
-                            MaterialTheme.colorScheme.errorContainer
-                        } else {
-                            BLUE_GLYPH
-                        }
-                        val iconTint = if (fileEntry.uri != null) {
-                            MaterialTheme.colorScheme.onErrorContainer
-                        } else {
-                            ON_BLUE_GLYPH
-                        }
+                        val icon =
+                            if (fileEntry.uri != null) Icons.Rounded.Close else Icons.Rounded.AttachFile
 
                         val attachInteractionSource = remember { MutableInteractionSource() }
-                        val attachPressed by attachInteractionSource.collectIsPressedAsState()
-                        val attachScale by animateFloatAsState(
-                            targetValue = if (attachPressed) 0.88f else 1f,
-                            label = "attach_scale"
-                        )
 
                         Box(
                             modifier = Modifier
-                                .scale(attachScale)
-                                .background(iconBgColor, shape = CircleShape)
+                                .background(MaterialTheme.colorScheme.secondary, shape = CircleShape)
                                 .clickable(
                                     interactionSource = attachInteractionSource,
                                     indication = null
@@ -170,9 +151,9 @@ fun USBFlashScreen(usbFlashViewModel: USBFlashViewModel) {
                                 .padding(10.dp)
                         ) {
                             Icon(
-                                painter = painterResource(id = iconRes),
+                                imageVector = icon,
                                 contentDescription = null,
-                                tint = iconTint,
+                                tint = MaterialTheme.colorScheme.onSecondary,
                                 modifier = Modifier.size(22.dp)
                             )
                         }
@@ -245,7 +226,7 @@ fun USBFlashScreen(usbFlashViewModel: USBFlashViewModel) {
         }
 
         if (loading) {
-            CircularWavyProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            LoadingIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }

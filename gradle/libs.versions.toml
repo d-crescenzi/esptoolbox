@@ -23,6 +23,7 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
@@ -32,6 +33,7 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 io-insert-koin-koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinAndroid" }
 koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinAndroid" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial3" }
+compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 usb-serial = { module = "com.github.mik3y:usb-serial-for-android", version.ref = "usbSerial" }
 esp-touch = { module = "com.github.EspressifApp:lib-esptouch-android", version.ref = "espTouch" }

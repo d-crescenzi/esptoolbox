@@ -4,6 +4,10 @@ import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,14 +43,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -63,7 +68,7 @@ import com.crescenzi.esptoolbox.core.AppConstants.NAV_DOT_COLOR
 import com.crescenzi.esptoolbox.core.AppConstants.NAV_DOT_OFFSET
 import com.crescenzi.esp32.LogRepo
 import com.crescenzi.esptoolbox.presentation.DeviceHardwareStatus
-import com.crescenzi.esptoolbox.presentation.entry.EntryScreen
+import com.crescenzi.esptoolbox.presentation.onboarding.OnboardingScreen
 import com.crescenzi.esptoolbox.presentation.requirement.RequirementScreen
 import com.crescenzi.esptoolbox.presentation.main_shell.logs.LogScreen
 import com.crescenzi.esptoolbox.presentation.main_shell.usb_connection.USBConnectionScreen
@@ -81,7 +86,7 @@ import org.koin.compose.koinInject
 
 
 @Serializable
-object HomePage
+object OnboardingPage
 
 @Serializable
 object UsbPage
@@ -124,13 +129,12 @@ private enum class Workspace {
 
     @DrawableRes
     fun icon(): Int = when (this) {
-        USB -> R.drawable.usb_icon
-        FLASH -> R.drawable.flash_icon
-        LOG -> R.drawable.log_icon
-        WIFI -> R.drawable.wifi_icon
+        USB -> R.drawable.avd_nav_usb
+        FLASH -> R.drawable.avd_nav_flash
+        LOG -> R.drawable.avd_nav_log
+        WIFI -> R.drawable.avd_nav_wifi
     }
 }
-
 
 @Composable
 fun MainShell(
@@ -142,7 +146,7 @@ fun MainShell(
     LaunchedEffect(Unit) {
         val current = navController.currentDestination
         if (current == null || current.route == null) {
-            navController.navigate(HomePage) {
+            navController.navigate(OnboardingPage) {
                 popUpTo(0)
             }
         }
@@ -174,7 +178,7 @@ fun MainShell(
     }
 
     /**
-     * If a requirement gets lost anywhere past the entry checks, forward to the blocking
+     * If a requirement gets lost anywhere past the onboarding checks, forward to the blocking
      * page and empty the back stack
      */
     LaunchedEffect(locationEnabled, locationPermission, internetEnabled, currentWorkspace) {
@@ -217,11 +221,11 @@ fun MainShell(
 
                 NavHost(
                     navController = navController,
-                    startDestination = HomePage,
+                    startDestination = OnboardingPage,
                     modifier = Modifier.weight(1f)
                 ) {
-                    composable<HomePage> {
-                        EntryScreen(koinViewModel(viewModelStoreOwner = it))
+                    composable<OnboardingPage> {
+                        OnboardingScreen(koinViewModel(viewModelStoreOwner = it))
                     }
                     composable<UsbPage> {
                         USBConnectionScreen(
@@ -281,7 +285,7 @@ fun MainShell(
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                         if (currentWorkspace != workspace) {
                                             navController.navigate(workspace.destination()) {
-                                                popUpTo(HomePage) { saveState = true }
+                                                popUpTo(OnboardingPage) { saveState = true }
                                                 launchSingleTop = true
                                                 restoreState = true
                                             }
@@ -302,7 +306,7 @@ fun MainShell(
 
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationGraphicsApi::class)
 @Composable
 private fun NavPillItem(
     @DrawableRes icon: Int,
@@ -316,6 +320,9 @@ private fun NavPillItem(
     val tint by transition.animateColor(label = "tint") {
         if (it) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
     }
+    val avd = AnimatedImageVector.animatedVectorResource(icon)
+    var atEnd by remember { mutableStateOf(false) }
+    val painter = rememberAnimatedVectorPainter(animatedImageVector = avd, atEnd = atEnd)
 
     TooltipBox(
         positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
@@ -329,7 +336,10 @@ private fun NavPillItem(
                 .selectable(
                     selected = selected,
                     role = Role.Tab,
-                    onClick = onClick,
+                    onClick = {
+                        atEnd = !atEnd
+                        onClick()
+                    },
                 ),
             contentAlignment = Alignment.Center,
         ) {
@@ -350,7 +360,7 @@ private fun NavPillItem(
                 },
             ) {
                 Icon(
-                    painter = painterResource(icon),
+                    painter = painter,
                     contentDescription = contentDescription,
                     tint = tint,
                     modifier = Modifier.size(24.dp),

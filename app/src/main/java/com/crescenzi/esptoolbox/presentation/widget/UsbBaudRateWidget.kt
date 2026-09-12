@@ -33,6 +33,7 @@ Manages the baud rate — custom dropdown anchored to our EditText field
  */
 @Composable
 fun UsbBaudRateWidget(
+    modifier: Modifier = Modifier,
     selectedBaudRate: BaudRateFormat,
     onBaudRateSelected: (BaudRateFormat) -> Unit,
 ) {
@@ -44,7 +45,7 @@ fun UsbBaudRateWidget(
         label = "arrow_rotation"
     )
 
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = modifier.fillMaxWidth()) {
 
         Box(
             modifier = Modifier

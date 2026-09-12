@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.crescenzi.esptoolbox.presentation.widget.AppScaffold
+import com.crescenzi.esptoolbox.theme.CONTENT_TOP_PADDING
 import com.crescenzi.esptoolbox.theme.LATERAL_PADDING
-import com.crescenzi.esptoolbox.theme.SPACE_L
 
 /**
  * Generic blocking page shown when a requirement is lost while using the app,
@@ -32,7 +32,7 @@ fun RequirementScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = LATERAL_PADDING)
-                .padding(top = SPACE_L)
+                .padding(top = CONTENT_TOP_PADDING)
         ) {
             Text(
                 text = stringResource(subtitleRes),
