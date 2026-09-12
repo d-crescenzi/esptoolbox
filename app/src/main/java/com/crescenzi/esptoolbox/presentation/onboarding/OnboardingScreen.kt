@@ -5,6 +5,9 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -15,6 +18,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.crescenzi.esptoolbox.R
 import com.crescenzi.esptoolbox.presentation.main_shell.LocalNavController
+import com.crescenzi.esptoolbox.presentation.main_shell.ONBOARDING_NAV_PILL_SHARED_KEY
 import com.crescenzi.esptoolbox.presentation.main_shell.OnboardingPage
 import com.crescenzi.esptoolbox.presentation.main_shell.UsbPage
 import com.crescenzi.esptoolbox.presentation.widget.AppButton
@@ -54,14 +61,18 @@ import com.crescenzi.esptoolbox.theme.LATERAL_PADDING
 import com.crescenzi.esptoolbox.theme.SPACE_L
 import com.crescenzi.esptoolbox.theme.SPACE_M
 import com.crescenzi.esptoolbox.theme.SPACE_S
+import com.crescenzi.esptoolbox.theme.SPACE_XL
 
 
 /**
  * Page used for all onboarding permission checks
  */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun OnboardingScreen(
-    onboardingViewModel: OnboardingViewModel
+    onboardingViewModel: OnboardingViewModel,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
 
     val activity = LocalActivity.current
@@ -95,6 +106,17 @@ fun OnboardingScreen(
             OnboardingStepId.LOCATION -> !locationState
         }
     }
+    val goButtonModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+        with(sharedTransitionScope) {
+            Modifier.sharedBounds(
+                sharedContentState = rememberSharedContentState(ONBOARDING_NAV_PILL_SHARED_KEY),
+                animatedVisibilityScope = animatedVisibilityScope,
+                resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
+            )
+        }
+    } else {
+        Modifier
+    }
 
     AppScaffold(
         title = stringResource(R.string.get_started_tool),
@@ -102,6 +124,7 @@ fun OnboardingScreen(
         scrollable = false,
         bottomBar = {
             AppButton(
+                modifier = goButtonModifier,
                 txt = stringResource(R.string.go_tool),
                 enabled = allRequirementsMet,
                 onTap = {
@@ -187,14 +210,14 @@ private fun OnboardingStep(
         easing = CubicBezierEasing(0.2f, 0f, 0f, 1f)
     )
     val stepHeight by animateDpAsState(
-        targetValue = if (active) 184.dp else 80.dp,
+        targetValue = if (active) 216.dp else 80.dp,
         animationSpec = motion,
         label = "${id.name}_height"
     )
-    val linePadding by animateDpAsState(
+    val lineGap by animateDpAsState(
         targetValue = if (active) SPACE_S else SPACE_M,
         animationSpec = motion,
-        label = "${id.name}_line_padding"
+        label = "${id.name}_line_gap"
     )
     val titleTopPadding by animateDpAsState(
         targetValue = if (active) 0.dp else SPACE_S,
@@ -206,17 +229,35 @@ private fun OnboardingStep(
         animationSpec = tween(durationMillis = 220),
         label = "${id.name}_circle_color"
     )
+    val contentArrangement = when {
+        active && isLast -> Arrangement.Bottom
+        active -> Arrangement.Center
+        else -> Arrangement.Top
+    }
+    val contentBottomPadding = when {
+        active && isLast -> SPACE_XL
+        isLast -> 0.dp
+        else -> SPACE_M
+    }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(stepHeight),
+            .height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.spacedBy(SPACE_L)
     ) {
         Column(
-            modifier = Modifier.width(40.dp),
+            modifier = Modifier
+                .width(40.dp)
+                .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            if (active && isLast) {
+                TimelineLine(
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -232,22 +273,22 @@ private fun OnboardingStep(
             }
 
             if (!isLast) {
-                Box(
+                TimelineLine(
                     modifier = Modifier
-                        .padding(top = linePadding)
-                        .width(1.dp)
                         .weight(1f)
-                        .background(colorScheme.secondary.copy(alpha = 0.65f))
+                        .padding(top = lineGap)
                 )
+            } else if (active) {
+                Spacer(modifier = Modifier.height(SPACE_XL + SPACE_L))
             }
         }
 
         Column(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxHeight()
-                .padding(bottom = if (isLast) 0.dp else SPACE_M),
-            verticalArrangement = if (active) Arrangement.Center else Arrangement.Top
+                .defaultMinSize(minHeight = stepHeight)
+                .padding(bottom = contentBottomPadding),
+            verticalArrangement = contentArrangement
         ) {
             Text(
                 text = title,
@@ -291,4 +332,13 @@ private fun OnboardingStep(
             }
         }
     }
+}
+
+@Composable
+private fun TimelineLine(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .width(1.dp)
+            .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.65f))
+    )
 }

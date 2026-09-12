@@ -38,7 +38,7 @@ fun UsbUpdaterButtonsWidget(
          */
         AppButton(
             txt = stringResource(R.string.btn_reset),
-            type = AppButtonType.CLEAR,
+            type = AppButtonType.OUTLINED,
             destructive = true,
             enabled = resetEnabled,
             fillWidth = false,

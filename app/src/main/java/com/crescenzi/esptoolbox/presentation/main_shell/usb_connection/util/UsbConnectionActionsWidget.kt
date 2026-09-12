@@ -1,6 +1,5 @@
 package com.crescenzi.esptoolbox.presentation.main_shell.usb_connection.util
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -14,7 +13,6 @@ import com.crescenzi.esptoolbox.core.AppConstants.STATUS_DEF_CHAR
 import com.crescenzi.esp32.usb.UsbPermission
 import com.crescenzi.esptoolbox.presentation.main_shell.usb_connection.USBConnectionViewModel
 import com.crescenzi.esptoolbox.presentation.widget.AppButton
-import com.crescenzi.esptoolbox.theme.SPACE_XL
 
 
 /**
@@ -46,7 +44,7 @@ fun UsbConnectionActionsWidget(
     val btnText = if (usbPermission == UsbPermission.GRANTED) connectMessage else grantMessage
 
     AppButton(
-        modifier = modifier.padding(top = SPACE_XL),
+        modifier = modifier,
         txt = btnText,
         enabled = btnEnabled.value && !loading,
         onTap = {

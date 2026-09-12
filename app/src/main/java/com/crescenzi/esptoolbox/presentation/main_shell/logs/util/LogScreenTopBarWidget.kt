@@ -29,20 +29,6 @@ fun LogScreenTopBarWidget(logViewModel: LogViewModel) {
     ) {
 
         /**
-         * Copy to clipboard (filled)
-         */
-        AppButton(
-            modifier = Modifier.weight(1f),
-            txt = stringResource(R.string.btn_copy),
-            enabled = hasLogs,
-            onTap = {
-                localClipboard.nativeClipboard.setPrimaryClip(
-                    ClipData.newPlainText("Log", logViewModel.logRepo.toString())
-                )
-            }
-        )
-
-        /**
          * Clear logs (outlined, red)
          */
         AppButton(
@@ -53,6 +39,20 @@ fun LogScreenTopBarWidget(logViewModel: LogViewModel) {
             destructive = true,
             onTap = {
                 logViewModel.logRepo.cleanLog()
+            }
+        )
+
+        /**
+         * Copy to clipboard (filled)
+         */
+        AppButton(
+            modifier = Modifier.weight(1f),
+            txt = stringResource(R.string.btn_copy),
+            enabled = hasLogs,
+            onTap = {
+                localClipboard.nativeClipboard.setPrimaryClip(
+                    ClipData.newPlainText("Log", logViewModel.logRepo.toString())
+                )
             }
         )
     }

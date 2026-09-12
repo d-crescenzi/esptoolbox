@@ -97,6 +97,7 @@ internal fun AppTextField(
     }
 
     val textColor = if (dimmed) colorScheme.onSurface.copy(alpha = 0.4f) else colorScheme.onSurface
+    val placeholderColor = if (dimmed) colorScheme.onSurface.copy(alpha = 0.4f) else colorScheme.onSurfaceVariant
     val cornerRadiusPx = FIELD_RADIUS.dpToPx()
     val ringWidthPx = 2.dp.dpToPx()
 
@@ -141,7 +142,7 @@ internal fun AppTextField(
                         Text(
                             text = label,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = colorScheme.onSurfaceVariant
+                            color = placeholderColor
                         )
                     }
                     innerTextField()
@@ -151,11 +152,12 @@ internal fun AppTextField(
                 Icon(
                     imageVector = if (revealed) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
                     contentDescription = null,
-                    tint = colorScheme.onSurfaceVariant,
+                    tint = placeholderColor,
                     modifier = Modifier
                         .padding(start = SPACE_S)
                         .size(22.dp)
                         .clickable(
+                            enabled = fieldEnabled,
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
                         ) { revealed = !revealed }

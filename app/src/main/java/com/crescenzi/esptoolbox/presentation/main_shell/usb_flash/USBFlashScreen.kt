@@ -6,9 +6,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -98,131 +98,128 @@ fun USBFlashScreen(usbFlashViewModel: USBFlashViewModel) {
         AppScaffold(
             title = stringResource(R.string.flash_title),
             reserveTopBarSpace = true,
-            contentPadding = PaddingValues(
-                start = LATERAL_PADDING,
-                end = LATERAL_PADDING,
-                top = CONTENT_TOP_PADDING,
-                bottom = NAV_PILL_CLEARANCE + SPACE_L
-            )
+            scrollable = false
         ) {
 
-            Text(
-                text = stringResource(R.string.files_description),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = LATERAL_PADDING)
+                    .padding(top = CONTENT_TOP_PADDING, bottom = NAV_PILL_CLEARANCE + SPACE_L),
+                verticalArrangement = Arrangement.spacedBy(SPACE_L)
+            ) {
+                Column {
+                    flashFiles.forEachIndexed { index, fileEntry ->
 
-            Column {
-                flashFiles.forEachIndexed { index, fileEntry ->
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        val icon =
-                            if (fileEntry.uri != null) Icons.Rounded.Close else Icons.Rounded.AttachFile
-
-                        val attachInteractionSource = remember { MutableInteractionSource() }
-
-                        Box(
+                        Row(
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.secondary, shape = CircleShape)
-                                .clickable(
-                                    interactionSource = attachInteractionSource,
-                                    indication = null
-                                ) {
-                                    if (fileEntry.uri != null) {
-                                        // remove file reference
-                                        usbFlashViewModel.updateFlashFile(
-                                            index,
-                                            label = ".bin",
-                                            address = 0,
-                                            uri = null
-                                        )
-                                        addressValid[index] = true
-                                    } else {
-                                        // open picker
-                                        pickers[index].launch(arrayOf(PICK_MIME_TYPE))
-                                    }
-                                }
-                                .padding(10.dp)
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSecondary,
-                                modifier = Modifier.size(22.dp)
-                            )
-                        }
 
-                        Spacer(modifier = Modifier.width(16.dp))
+                            val icon =
+                                if (fileEntry.uri != null) Icons.Rounded.Close else Icons.Rounded.AttachFile
 
-                        Text(
-                            text = fileEntry.label,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                            modifier = Modifier.weight(1.3f)
-                        )
-                        Box(modifier = Modifier.weight(1f)) {
-                            key(index, fileEntry.uri) {
-                                AppTextField(
-                                    opt = KeyboardOptions.Default,
-                                    label = "",
-                                    initialValue = "0x${fileEntry.address.toString(16)}",
-                                    onValueChange = { newText ->
-                                        try {
-                                            val parsed = newText
-                                                .trim()
-                                                .lowercase()
-                                                .removePrefix("0x")
-                                                .toIntOrNull(16)
+                            val attachInteractionSource = remember { MutableInteractionSource() }
 
-                                            addressValid[index] = parsed != null
-
-                                            if (parsed != null) {
-                                                usbFlashViewModel.updateFlashFile(
-                                                    index = index,
-                                                    label = fileEntry.label,
-                                                    uri = fileEntry.uri,
-                                                    address = parsed
-                                                )
-                                            }
-                                        } catch (e: Exception) {
-                                            usbFlashViewModel.logRepo.plusLog(
-                                                getMessage(context, e),
-                                                LogLevel.ERROR
+                            Box(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.secondary, shape = CircleShape)
+                                    .clickable(
+                                        interactionSource = attachInteractionSource,
+                                        indication = null
+                                    ) {
+                                        if (fileEntry.uri != null) {
+                                            // remove file reference
+                                            usbFlashViewModel.updateFlashFile(
+                                                index,
+                                                label = ".bin",
+                                                address = 0,
+                                                uri = null
                                             )
+                                            addressValid[index] = true
+                                        } else {
+                                            // open picker
+                                            pickers[index].launch(arrayOf(PICK_MIME_TYPE))
                                         }
                                     }
+                                    .padding(10.dp)
+                            ) {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSecondary,
+                                    modifier = Modifier.size(22.dp)
                                 )
                             }
-                        }
 
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Text(
+                                text = fileEntry.label,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                                modifier = Modifier.weight(1.3f)
+                            )
+                            Box(modifier = Modifier.weight(1f)) {
+                                key(index, fileEntry.uri) {
+                                    AppTextField(
+                                        opt = KeyboardOptions.Default,
+                                        label = "",
+                                        initialValue = "0x${fileEntry.address.toString(16)}",
+                                        onValueChange = { newText ->
+                                            try {
+                                                val parsed = newText
+                                                    .trim()
+                                                    .lowercase()
+                                                    .removePrefix("0x")
+                                                    .toIntOrNull(16)
+
+                                                addressValid[index] = parsed != null
+
+                                                if (parsed != null) {
+                                                    usbFlashViewModel.updateFlashFile(
+                                                        index = index,
+                                                        label = fileEntry.label,
+                                                        uri = fileEntry.uri,
+                                                        address = parsed
+                                                    )
+                                                }
+                                            } catch (e: Exception) {
+                                                usbFlashViewModel.logRepo.plusLog(
+                                                    getMessage(context, e),
+                                                    LogLevel.ERROR
+                                                )
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+
+                        }
                     }
                 }
+
+                UsbBaudRateWidget(
+                    selectedBaudRate = baudRate,
+                    onBaudRateSelected = {
+                        usbFlashViewModel.updateBaudRate(it)
+                    }
+                )
+
+                UsbUpdaterButtonsWidget(
+                    flashEnabled = flashEnabled && !loading,
+                    resetEnabled = currentDevice != null && !loading,
+                    onReset = usbFlashViewModel::commandReset,
+                    onFlash = {
+                        /**
+                         * Takes all entries and flashes them
+                         */
+                        usbFlashViewModel.flash(context)
+                    }
+                )
             }
-
-            UsbBaudRateWidget(
-                selectedBaudRate = baudRate,
-                onBaudRateSelected = {
-                    usbFlashViewModel.updateBaudRate(it)
-                }
-            )
-
-            UsbUpdaterButtonsWidget(
-                flashEnabled = flashEnabled && !loading,
-                resetEnabled = currentDevice != null && !loading,
-                onReset = usbFlashViewModel::commandReset,
-                onFlash = {
-                    /**
-                     * Takes all entries and flashes them
-                     */
-                    usbFlashViewModel.flash(context)
-                }
-            )
         }
 
         if (loading) {

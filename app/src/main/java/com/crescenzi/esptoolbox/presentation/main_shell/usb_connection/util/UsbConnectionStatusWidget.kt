@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.crescenzi.esptoolbox.R
 import com.crescenzi.esp32.usb.model.UsbStatus.SnapshotUsb
-import com.crescenzi.esptoolbox.theme.SPACE_S
 import com.crescenzi.esptoolbox.theme.SPACE_XS
 
 /**
@@ -31,12 +30,6 @@ fun UsbConnectionStatusWidget(deviceSnapshot: SnapshotUsb) {
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            modifier = Modifier.padding(bottom = SPACE_S),
-            text = stringResource(R.string.usb_up_title),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
         labels.forEach { (label, value) ->
             Row(
                 modifier = Modifier

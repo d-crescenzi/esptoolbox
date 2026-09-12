@@ -18,7 +18,11 @@ import com.crescenzi.esptoolbox.presentation.widget.AppTextField
  * Data input section
  */
 @Composable
-fun DataSection(wifiViewModel: WIFIViewModel, pwdState: MutableState<String>) {
+fun DataSection(
+    wifiViewModel: WIFIViewModel,
+    pwdState: MutableState<String>,
+    passwordEnabled: Boolean = true
+) {
 
     val ssid = wifiViewModel.ssid.collectAsStateWithLifecycle()
     val bssid = wifiViewModel.bssid.collectAsStateWithLifecycle()
@@ -61,7 +65,8 @@ fun DataSection(wifiViewModel: WIFIViewModel, pwdState: MutableState<String>) {
         onValueChange = { pwdState.value = it },
         label = stringResource(R.string.wifi_pwd_hint),
         initialValue = pwdState.value,
-        isPassword = true
+        isPassword = true,
+        enabled = passwordEnabled
     )
 
 }

@@ -62,7 +62,7 @@
     <string name="usb_up_title" translatable="false">USB · SERIAL</string>
     <string name="btn_copy">Copy</string>
     <string name="btn_clear">Clear</string>
-    <string name="usb_title" translatable="false">Usb Setup</string>
+    <string name="usb_title" translatable="false">USB Setup</string>
     <string name="flash_title" translatable="false">Firmware Flash</string>
     <string name="log_title" translatable="false">Logs</string>
     <string name="wifi_title" translatable="false">Wi-Fi Setup (only 2.4GHz)</string>

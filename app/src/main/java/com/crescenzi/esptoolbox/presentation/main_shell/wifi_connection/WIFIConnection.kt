@@ -67,7 +67,11 @@ fun WIFIConnectionScreen(
                     .padding(top = CONTENT_TOP_PADDING)
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(SPACE_L)) {
-                    DataSection(wifiViewModel, pwdState)
+                    DataSection(
+                        wifiViewModel = wifiViewModel,
+                        pwdState = pwdState,
+                        passwordEnabled = !loading
+                    )
                 }
             }
 

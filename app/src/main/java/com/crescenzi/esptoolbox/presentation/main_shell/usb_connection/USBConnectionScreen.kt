@@ -3,15 +3,12 @@ package com.crescenzi.esptoolbox.presentation.main_shell.usb_connection
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LoadingIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -70,21 +67,31 @@ fun USBConnectionScreen(
         AppScaffold(
             title = stringResource(R.string.usb_title),
             reserveTopBarSpace = true,
-            contentPadding = PaddingValues(
-                start = LATERAL_PADDING,
-                end = LATERAL_PADDING,
-                top = CONTENT_TOP_PADDING,
-                bottom = NAV_PILL_CLEARANCE
-            )
+            scrollable = false,
+            bottomBar = {
+                UsbConnectionActionsWidget(
+                    Modifier.padding(bottom = NAV_PILL_CLEARANCE),
+                    usbConnectionViewModel,
+                ) {
+                    usbConnectionViewModel.sendCredentials(
+                        UsbConnectionArgs(
+                            ssid.value,
+                            pwd.value,
+                            format.value,
+                            baudRate.value
+                        ), onReqUsbPermission
+                    )
+                }
+            }
         ) {
 
-            Column(verticalArrangement = Arrangement.spacedBy(SPACE_L)) {
-
-                Text(
-                    text = stringResource(R.string.board_name),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = LATERAL_PADDING)
+                    .padding(top = CONTENT_TOP_PADDING, bottom = NAV_PILL_CLEARANCE),
+                verticalArrangement = Arrangement.spacedBy(SPACE_L)
+            ) {
 
                 UsbConnectionCredentialsWidget(ssid, pwd)
 
@@ -106,32 +113,7 @@ fun USBConnectionScreen(
                 }
 
 
-                UsbConnectionActionsWidget(
-                    Modifier,
-                    usbConnectionViewModel,
-                ) {
-                    /**
-                     * - Button onClick  -->  Send credentials or request permissions
-                     */
-                    usbConnectionViewModel.sendCredentials(
-                        UsbConnectionArgs(
-                            ssid.value,
-                            pwd.value,
-                            format.value,
-                            baudRate.value
-                        ), onReqUsbPermission
-                    )
-                }
-
-                HorizontalDivider()
-
                 UsbConnectionStatusWidget(deviceSnapshot)
-
-                Text(
-                    text = stringResource(R.string.usb_connection_info),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
         }
 
