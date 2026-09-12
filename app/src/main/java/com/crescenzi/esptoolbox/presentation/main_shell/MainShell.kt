@@ -138,7 +138,8 @@ private enum class Workspace {
 
 @Composable
 fun MainShell(
-    onReqUsbPermission: () -> Unit
+    onReqUsbPermission: () -> Unit,
+    onReqLocationPermission: () -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -226,7 +227,8 @@ fun MainShell(
                 ) {
                     composable<OnboardingPage> {
                         OnboardingScreen(
-                            onboardingViewModel = koinViewModel(viewModelStoreOwner = it)
+                            onboardingViewModel = koinViewModel(viewModelStoreOwner = it),
+                            onReqLocationPermission = onReqLocationPermission
                         )
                     }
                     composable<UsbPage> {

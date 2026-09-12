@@ -7,9 +7,11 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.usb.UsbManager
 import android.location.LocationManager
+import android.net.Uri
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -41,10 +43,15 @@ import org.koin.android.ext.android.inject
  * Device Connection Activity
  */
 class MainActivity : ComponentActivity() {
+    companion object {
+        private const val PERMISSION_PREFS = "permission_prefs"
+        private const val KEY_LOCATION_PERMISSION_REQUESTED = "location_permission_requested"
+    }
 
     private val ssidReceiver = SsidReceiver()
     private val usbPermissionReceiver = UsbPermissionReceiver()
     private val genericReceiver = GenericReceiver()
+    private var ssidReceiverRegistered = false
 
     private val deviceHardwareStatus: DeviceHardwareStatus by inject()
     private val usbRepo: UsbRepo by inject()
@@ -56,18 +63,23 @@ class MainActivity : ComponentActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionsMap: Map<String, Boolean> ->
+        getSharedPreferences(PERMISSION_PREFS, MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_LOCATION_PERMISSION_REQUESTED, true)
+            .apply()
 
         val coarseGranted = permissionsMap[permissions[0]] == true
         val fineGranted = permissionsMap[permissions[1]] == true
 
         if (coarseGranted && fineGranted) {
-            registerReceiver(
-                ssidReceiver,
-                IntentFilter(NETWORK_STATE_CHANGED_ACTION)
-            )
+            registerSsidReceiverIfNeeded()
             deviceHardwareStatus.changeLocationPermissionStatus(true)
-        } else
+        } else {
             deviceHardwareStatus.changeLocationPermissionStatus(false)
+            if (isLocationPermissionPermanentlyDenied()) {
+                openAppSettings()
+            }
+        }
     }
 
 
@@ -127,14 +139,21 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxSize()
                         ) {
                             MainShell(
-                                onReqUsbPermission = this@MainActivity::requestUsbPermission
+                                onReqUsbPermission = this@MainActivity::requestUsbPermission,
+                                onReqLocationPermission = this@MainActivity::requestLocationPermission
                             )
                         }
                     })
             }
         }
+    }
 
-        requestPermissionLauncher.launch(permissions.toTypedArray())
+    private fun requestLocationPermission() {
+        if (isLocationPermissionPermanentlyDenied()) {
+            openAppSettings()
+        } else {
+            requestPermissionLauncher.launch(permissions.toTypedArray())
+        }
     }
 
 
@@ -162,10 +181,40 @@ class MainActivity : ComponentActivity() {
     private fun checkPermission(permission: String) =
         ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 
+    private fun hasLocationPermissions() =
+        permissions.all { checkPermission(it) }
+
+    private fun isLocationPermissionPermanentlyDenied(): Boolean {
+        val alreadyRequested = getSharedPreferences(PERMISSION_PREFS, MODE_PRIVATE)
+            .getBoolean(KEY_LOCATION_PERMISSION_REQUESTED, false)
+
+        return alreadyRequested && permissions.any { permission ->
+            !checkPermission(permission) && !shouldShowRequestPermissionRationale(permission)
+        }
+    }
+
+    private fun openAppSettings() {
+        startActivity(
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", packageName, null)
+            }
+        )
+    }
+
+    private fun registerSsidReceiverIfNeeded() {
+        if (ssidReceiverRegistered) return
+        registerReceiver(
+            ssidReceiver,
+            IntentFilter(NETWORK_STATE_CHANGED_ACTION)
+        )
+        ssidReceiverRegistered = true
+    }
+
     override fun onResume() {
         super.onResume()
 
-        if (checkPermission(permissions[0]) && checkPermission(permissions[1])) {
+        if (hasLocationPermissions()) {
+            registerSsidReceiverIfNeeded()
             deviceHardwareStatus.changeLocationPermissionStatus(true)
         } else
             deviceHardwareStatus.changeLocationPermissionStatus(false)
@@ -174,7 +223,9 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(usbPermissionReceiver)
-        unregisterReceiver(ssidReceiver)
+        if (ssidReceiverRegistered) {
+            unregisterReceiver(ssidReceiver)
+        }
         unregisterReceiver(genericReceiver)
     }
 

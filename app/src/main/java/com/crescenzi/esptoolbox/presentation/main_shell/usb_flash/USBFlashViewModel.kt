@@ -46,7 +46,7 @@ class USBFlashViewModel(
 
     fun addFlashFile(label: String, uri: Uri) {
         val current = _flashFiles.value
-        if (current.size >= MAX_FLASH_FILES) return
+        if (_loading.value || current.size >= MAX_FLASH_FILES) return
 
         _flashFiles.value = current + FlashFileEntry(
             label = label,
@@ -56,6 +56,7 @@ class USBFlashViewModel(
     }
 
     fun removeFlashFile(index: Int) {
+        if (_loading.value) return
         val current = _flashFiles.value.toMutableList()
         if (index !in current.indices) return
         current.removeAt(index)
@@ -63,6 +64,7 @@ class USBFlashViewModel(
     }
 
     fun updateFlashAddress(index: Int, address: Int?, addressValid: Boolean) {
+        if (_loading.value) return
         val current = _flashFiles.value.toMutableList()
         if (index !in current.indices) return
         current[index] = current[index].copy(

@@ -30,10 +30,11 @@ import com.crescenzi.esptoolbox.presentation.main_shell.usb_connection.util.UsbC
 import com.crescenzi.esptoolbox.presentation.main_shell.usb_connection.util.UsbConnectionStatusWidget
 import com.crescenzi.esptoolbox.presentation.widget.AppScaffold
 import com.crescenzi.esptoolbox.presentation.widget.UsbBaudRateWidget
-import com.crescenzi.esptoolbox.theme.CONTENT_TOP_PADDING
 import com.crescenzi.esptoolbox.theme.LATERAL_PADDING
 import com.crescenzi.esptoolbox.theme.NAV_PILL_CLEARANCE
 import com.crescenzi.esptoolbox.theme.SPACE_L
+import com.crescenzi.esptoolbox.theme.SPACE_M
+import com.crescenzi.esptoolbox.theme.SPACE_XL
 
 /**
  * There will always be only one device connected via USB
@@ -89,8 +90,8 @@ fun USBConnectionScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = LATERAL_PADDING)
-                    .padding(top = CONTENT_TOP_PADDING, bottom = NAV_PILL_CLEARANCE),
-                verticalArrangement = Arrangement.spacedBy(SPACE_L)
+                    .padding(top = SPACE_XL, bottom = SPACE_L),
+                verticalArrangement = Arrangement.spacedBy(SPACE_M)
             ) {
 
                 UsbConnectionCredentialsWidget(ssid, pwd)

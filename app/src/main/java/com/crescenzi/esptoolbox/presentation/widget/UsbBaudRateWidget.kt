@@ -3,8 +3,10 @@ package com.crescenzi.esptoolbox.presentation.widget
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenu
@@ -44,7 +46,7 @@ fun UsbBaudRateWidget(
         label = "arrow_rotation"
     )
 
-    Box(modifier = modifier.fillMaxWidth()) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
 
         Box(
             modifier = Modifier
@@ -78,6 +80,7 @@ fun UsbBaudRateWidget(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
+            modifier = Modifier.width(maxWidth),
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             shape = RoundedCornerShape(CARD_RADIUS)
         ) {

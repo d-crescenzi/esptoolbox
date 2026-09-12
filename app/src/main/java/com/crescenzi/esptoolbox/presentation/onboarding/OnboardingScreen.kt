@@ -1,9 +1,5 @@
 package com.crescenzi.esptoolbox.presentation.onboarding
 
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.CubicBezierEasing
@@ -36,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,20 +60,9 @@ import com.crescenzi.esptoolbox.theme.SPACE_XL
  */
 @Composable
 fun OnboardingScreen(
-    onboardingViewModel: OnboardingViewModel
+    onboardingViewModel: OnboardingViewModel,
+    onReqLocationPermission: () -> Unit
 ) {
-
-    val activity = LocalActivity.current
-
-    LaunchedEffect(activity) {
-        onboardingViewModel.onReqPermissionCallback = {
-            activity?.startActivity(
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", activity.packageName, null)
-                }
-            )
-        }
-    }
 
     val navController = LocalNavController.current
 
@@ -152,7 +136,7 @@ fun OnboardingScreen(
                         txt = stringResource(R.string.grant_permission_tool),
                         type = AppButtonType.OUTLINED,
                         fillWidth = false,
-                        onTap = onboardingViewModel::callReqPermission
+                        onTap = onReqLocationPermission
                     )
                 }
 
